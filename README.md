@@ -1,4 +1,8 @@
+# Magneta Style Transfer on Gradio
 
+![alt text](https://github.com/gradio-app/magenta/blob/master/screenshots/gradio-demo.png?raw=true)
+
+------------------------------------------------------------------
 <img src="magenta-logo-bg.png" height="75">
 
 [![Build Status](https://travis-ci.org/magenta/magenta.svg?branch=master)](https://travis-ci.org/magenta/magenta)
