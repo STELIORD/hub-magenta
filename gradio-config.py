@@ -5,10 +5,9 @@ import random
 import os
 from PIL import Image
 
-def load():
-    style_predict_path = tf.keras.utils.get_file('style_predict.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/prediction/1?lite-format=tflite')
-    style_transform_path = tf.keras.utils.get_file('style_transform.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/transfer/1?lite-format=tflite')
-    return style_predict_path, style_transform_path
+style_predict_path = tf.keras.utils.get_file('style_predict.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/prediction/1?lite-format=tflite')
+style_transform_path = tf.keras.utils.get_file('style_transform.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/transfer/1?lite-format=tflite')
+models = style_predict_path, style_transform_path
 
 
 def load_img(pil_img):
@@ -83,7 +82,7 @@ def run_style_transform(style_bottleneck, preprocessed_content_image,
     return stylized_image
 
 
-def predict(content_img, style_img, content_blending_ratio, models):
+def predict(content_img, style_img, content_blending_ratio):
     style_predict_path, style_transform_path = models
     content_img, filepath_content = load_img(content_img)
     style_img, filepath_style = load_img(style_img)
@@ -110,15 +109,10 @@ def predict(content_img, style_img, content_blending_ratio, models):
     return stylized_image_blended
 
 
-INPUTS = [gradio.inputs.ImageIn(cast_to="pillow", label="Content Image"),
-          gradio.inputs.ImageIn(
-    cast_to="pillow", label="Style Image"), gradio.inputs.Slider(0, 1,
-                                                                 "Content "
-                                                                 "Blending "
-                                                                 "Ratio")]
+INPUTS = [gradio.inputs.Image(label="Content Image"),
+          gradio.inputs.Image(label="Style Image"), 
+          gradio.inputs.Slider(0, 1, "Content", "Blending", "Ratio")]
+
 OUTPUTS = gradio.outputs.Image(label="Stylized Image")
-
-INTERFACE = gradio.Interface(fn=predict, inputs=INPUTS, outputs=OUTPUTS,
-                             load_fn=load)
-
-INTERFACE.launch(inbrowser=True, share=True)
+INTERFACE = gradio.Interface(fn=predict, inputs=INPUTS, outputs=OUTPUTS)
+INTERFACE.launch()
